@@ -1,2 +1,2 @@
-#!/bin/bash
-echo 'print("c is fun! ")' > "$PYFILE"
+#!/bin/bash 
+print("c is fun! ") > "$PYFILE"
