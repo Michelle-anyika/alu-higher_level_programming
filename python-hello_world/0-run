@@ -1,2 +1,2 @@
 #!/bin/bash
-export PYFILE="$python-hello_world/0-run.py"echo 'print("c is fun!")' > "$PYFILE"
+export PYFILE="$python-hello_world/0-run.py"echo 'print("c is fun! ")' > "$PYFILE"
