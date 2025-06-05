@@ -1,2 +1,2 @@
-myVar = 333;
-
+#!/usr/bin/node
+global.myVar = 333;
