@@ -2,49 +2,27 @@
 const request = require('request');
 
 const movieId = process.argv[2];
+const url = `https://swapi.dev/api/films/${movieId}/`;
 
-if (!movieId) {
-  console.error('Usage: ./101-starwars_characters.js <movie_id>');
-  process.exit(1);
-}
+if (!movieId) process.exit();
 
-const filmUrl = `https://swapi.dev/api/films/${movieId}/`;
+request(url, (err, res, body) => {
+  if (err) return;
 
-request(filmUrl, { json: true }, (error, response, body) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
-  if (response.statusCode !== 200) {
-    console.error(`Failed to fetch film ${movieId}: Status code ${response.statusCode}`);
-    return;
-  }
+  const film = JSON.parse(body);
+  const characters = film.characters;
 
-  const characters = body.characters;
-  if (!characters || characters.length === 0) {
-    return;
-  }
+  const printCharacter = (index) => {
+    if (index === characters.length) return;
 
-  // Function to fetch a single character's name
-  const fetchCharacterName = (url) => {
-    return new Promise((resolve, reject) => {
-      request(url, { json: true }, (err, res, charBody) => {
-        if (err) reject(err);
-        else if (res.statusCode !== 200) reject(new Error(`Failed to fetch ${url}`));
-        else resolve(charBody.name);
-      });
+    request(characters[index], (err, res, body) => {
+      if (!err) {
+        const character = JSON.parse(body);
+        console.log(character.name);
+        printCharacter(index + 1);
+      }
     });
   };
 
-  // Sequentially fetch and print character names to keep order
-  (async () => {
-    for (const charUrl of characters) {
-      try {
-        const name = await fetchCharacterName(charUrl);
-        console.log(name);
-      } catch (e) {
-        console.error(e.message);
-      }
-    }
-  })();
+  printCharacter(0);
 });
